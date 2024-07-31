@@ -10,27 +10,30 @@ function game() {
     const trees = document.querySelectorAll('.tree');
 
     const tree1 = trees[0];
+    const coordsTree1 = getCoords(tree1);
 
     animationId = requestAnimationFrame(startGame);
 
     function startGame() {
         treesAnimation();
         animationId = requestAnimationFrame(startGame);
-
     }
 
     function treesAnimation() {
-        const newCoord = getYCoord(tree1) + speed;
-        tree1.style.transform = `translateY(${newCoord}px)`;
+        const newCoordY = coordsTree1.y + speed;
+        coordsTree1.y = newCoordY;
+        tree1.style.transform = `translate(${coordsTree1.x}px, ${newCoordY}px)`;
     }
 
-    function getYCoord(element) {
+    function getCoords(element) {
         const matrix = window.getComputedStyle(element).transform;
         const array = matrix.split(',');
-        const lastElement = array[array.length - 1];
-        const coordY = parseFloat(lastElement);
+        const y = array[array.length - 1];
+        const x = array[array.length - 2];
+        const numericY = parseFloat(y);
+        const numericX = parseFloat(x);
 
-        return coordY;
+        return { x: numericX, y: numericY};
     }
 
     const gameButton = document.querySelector('.game-button');
@@ -41,6 +44,7 @@ function game() {
             gameButton.children[0].style.display = 'none';
             gameButton.children[1].style.display = 'initial';
         } else {
+            animationId = requestAnimationFrame(startGame);
             gameButton.children[0].style.display = 'initial';
             gameButton.children[1].style.display = 'none';
         }
