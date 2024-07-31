@@ -72,6 +72,10 @@ body {
     height: 60px;
 }
 
+.game-button .play {
+    display: none;
+}
+
 .danger {
     position: absolute;
     width: 80px;
