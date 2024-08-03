@@ -9,13 +9,89 @@ function game() {
     const car = document.querySelector('.car');
     const trees = document.querySelectorAll('.tree');
 
+
+    const carCoords = getCoords(car);
+    const carMoveInfo = {
+        top: null,
+        bottom: null,
+        left: null,
+        right: null,
+    };
     const treesCoords = [];
+
+    console.log(carCoords);
 
     for (let i = 0; i < trees.length; i++) {
         const tree = trees[i];
         const coordsTree = getCoords(tree);
 
         treesCoords.push(coordsTree);
+    }
+
+    // keydown
+    document.addEventListener('keydown', (event) => {
+        const code = event.code;
+
+        if (code === 'ArrowUp' && carMoveInfo.top === null) {
+            carMoveInfo.top = requestAnimationFrame(carMoveTop);
+        } else if (code === 'ArrowDown' && carMoveInfo.bottom === null) {
+            carMoveInfo.bottom = requestAnimationFrame(carMoveBottom);
+        } else if (code === 'ArrowLeft' && carMoveInfo.left === null) {
+            carMoveInfo.left = requestAnimationFrame(carMoveLeft);
+        } else if (code === 'ArrowRight' && carMoveInfo.right === null) {
+            carMoveInfo.right = requestAnimationFrame(carMoveRight);
+        }
+    });
+
+    // keyup
+    document.addEventListener('keyup', (event) => {
+        const code = event.code;
+
+        if (code === 'ArrowUp') {
+            cancelAnimationFrame(carMoveInfo.top);
+            carMoveInfo.top = null;
+        } else if (code === 'ArrowDown') {
+            cancelAnimationFrame(carMoveInfo.bottom);
+            carMoveInfo.bottom = null;
+        } else if (code === 'ArrowLeft') {
+            cancelAnimationFrame(carMoveInfo.left);
+            carMoveInfo.left = null;
+        } else if (code === 'ArrowRight') {
+            cancelAnimationFrame(carMoveInfo.right);
+            carMoveInfo.right = null;
+        }
+    });
+
+    function carMoveTop() {
+        const newY = carCoords.y - 5;
+        carCoords.y = newY;
+        carMove(carCoords.x, newY);
+        carMoveInfo.top = requestAnimationFrame(carMoveTop);
+    }
+
+    function carMoveBottom() {
+        const newY = carCoords.y + 5;
+        carCoords.y = newY;
+        carMove(carCoords.x, newY);
+        carMoveInfo.bottom = requestAnimationFrame(carMoveBottom);
+    }
+
+    function carMoveLeft() {
+        const newX = carCoords.x - 5;
+        carCoords.x = newX;
+        carMove(newX, carCoords.y);
+        carMoveInfo.left = requestAnimationFrame(carMoveLeft);
+    }
+
+    function carMoveRight() {
+        const newX = carCoords.x + 5;
+        carCoords.x = newX;
+        carMove(newX, carCoords.y);
+        carMoveInfo.right = requestAnimationFrame(carMoveRight);
+    }
+
+    function carMove(x, y) {
+        car.style.transform = `translate(${x}px, ${y}px)`;
     }
 
     animationId = requestAnimationFrame(startGame);
@@ -33,7 +109,7 @@ function game() {
             let newYCoord = coords.y + speed;
 
             if (newYCoord > window.innerHeight) {
-                newYCoord = -tree.height;
+                newYCoord = -370;
             }
 
             treesCoords[i].y = newYCoord;
